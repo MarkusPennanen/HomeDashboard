@@ -1,0 +1,471 @@
+:root {
+  --bg: #000;
+  --fg: #f2f2f2;
+  --dim: #8a8a8a;
+  --faint: #3a3a3a;
+  --pad: 3vmin;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+}
+
+html,
+body {
+  height: 100%;
+  background: var(--bg);
+  color: var(--fg);
+  overflow: hidden;
+}
+
+body {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-weight: 300;
+  cursor: none;
+}
+
+/* 3 columns x 3 rows; regions pin to the edges like MagicMirror */
+.mirror {
+  height: 100%;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-rows: auto 1fr auto;
+  grid-template-areas:
+    "tl tc tr"
+    "mc mc mc"
+    "bl bc br";
+  padding: var(--pad);
+  gap: var(--pad);
+}
+
+.region {
+  display: flex;
+  flex-direction: column;
+  gap: 2.5vmin;
+  min-width: 0;
+}
+
+.top_left {
+  grid-area: tl;
+  align-items: flex-start;
+}
+
+.top_center {
+  grid-area: tc;
+  align-items: center;
+  text-align: center;
+}
+
+.top_right {
+  grid-area: tr;
+  align-items: flex-end;
+  text-align: right;
+}
+
+.middle_center {
+  grid-area: mc;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.bottom_left {
+  grid-area: bl;
+  align-items: flex-start;
+  justify-content: flex-end;
+}
+
+.bottom_center {
+  grid-area: bc;
+  align-items: center;
+  justify-content: flex-end;
+  text-align: center;
+}
+
+.bottom_right {
+  grid-area: br;
+  align-items: flex-end;
+  justify-content: flex-end;
+  text-align: right;
+}
+
+/* Module building blocks */
+.module {
+  max-width: 100%;
+}
+
+.module-header {
+  font-size: 1.6vmin;
+  color: var(--dim);
+  padding-bottom: .6vmin;
+  margin-bottom: 1vmin;
+  border-bottom: 1px solid var(--faint);
+}
+
+.dim {
+  color: var(--dim);
+}
+
+.bright {
+  color: var(--fg);
+  font-weight: 400;
+}
+
+.small {
+  font-size: 2vmin;
+}
+
+.medium {
+  font-size: 3vmin;
+}
+
+.large {
+  font-size: 5vmin;
+}
+
+.xlarge {
+  font-size: 9vmin;
+  line-height: 1;
+  letter-spacing: -.02em;
+}
+
+.fade {
+  animation: fade .8s ease;
+}
+
+@keyframes fade {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fade {
+    animation: none;
+  }
+}
+
+@media (max-width: 700px) {
+  .mirror {
+    grid-template-columns: 1fr;
+    grid-template-areas: "tl" "tc" "tr" "mc" "bl" "bc" "br";
+    overflow-y: auto;
+  }
+
+  .top_right,
+  .bottom_right {
+    align-items: flex-start;
+    text-align: left;
+  }
+
+  html,
+  body {
+    overflow: auto;
+  }
+}
+
+/* HSL departures */
+.departures {
+  border-collapse: collapse;
+  margin: 1vmin 0 2.5vmin;
+  font-size: 1.6vmin;
+}
+
+.departures td {
+  padding: .5vmin 0;
+}
+
+.departures .line {
+  padding-right: 2vmin;
+  text-align: left;
+}
+
+.departures .dest {
+  padding-right: 3vmin;
+  text-align: left;
+  color: var(--dim);
+}
+
+.departures .when {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.top_right .departures,
+.bottom_right .departures {
+  margin-left: auto;
+}
+
+/* Weather */
+.wx-now {
+  display: flex;
+  align-items: center;
+  gap: 2vmin;
+}
+
+.top_right .wx-now,
+.bottom_right .wx-now {
+  justify-content: flex-end;
+}
+
+.wx-icon {
+  font-size: 8vmin;
+  line-height: 1;
+}
+
+.wx-strip {
+  display: flex;
+  gap: 3vmin;
+  margin-top: 2vmin;
+}
+
+.wx-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: .4vmin;
+}
+
+/* News */
+.news {
+  max-width: 60ch;
+  display: flex;
+  flex-direction: column;
+  gap: 1vmin;
+}
+
+.news .headline {
+  color: var(--fg);
+  text-decoration: none;
+  line-height: 1.25;
+}
+
+/* Burn-in protection (pixel shift) */
+.mirror {
+  transition: transform 3s ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mirror {
+    transition: none;
+  }
+}
+
+/* Overlay modules: taken out of the layout, anchored to the corner of their region.
+   They can grow over neighbouring areas but never push other modules around. */
+.mirror,
+.region {
+  position: relative;
+}
+
+.module.overlay {
+  position: absolute;
+  width: max-content;
+  max-width: 100%;
+}
+
+.top_left .module.overlay,
+.top_center .module.overlay,
+.top_right .module.overlay {
+  top: 0;
+}
+
+.bottom_left .module.overlay,
+.bottom_center .module.overlay,
+.bottom_right .module.overlay {
+  bottom: 0;
+}
+
+.top_left .module.overlay,
+.bottom_left .module.overlay {
+  left: 0;
+}
+
+.top_right .module.overlay,
+.bottom_right .module.overlay {
+  right: 0;
+}
+
+.top_center .module.overlay,
+.bottom_center .module.overlay {
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+/* Calendar */
+.cal-title {
+  margin-bottom: 1vmin;
+  text-align: left;
+}
+
+.calendar-grid {
+  border-collapse: collapse;
+  font-size: 2.2vmin;
+  font-variant-numeric: tabular-nums;
+}
+
+.calendar-grid th {
+  font-weight: 300;
+  padding: .4vmin 1vmin;
+  font-size: 1.8vmin;
+}
+
+.calendar-grid td {
+  text-align: center;
+  padding: .5vmin 1vmin;
+}
+
+.cal-other {
+  color: var(--faint);
+}
+
+.cal-week {
+  font-size: 1.8vmin;
+  padding-right: 1.5vmin;
+}
+
+.cal-today {
+  background: var(--fg);
+  color: var(--bg);
+  border-radius: 50%;
+  font-weight: 400;
+}
+
+/* Calendar events */
+.has-event {
+  position: relative;
+}
+
+.has-event::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: .1vmin;
+  transform: translateX(-50%);
+  width: .6vmin;
+  height: .6vmin;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.cal-events {
+  margin-top: 2vmin;
+  display: flex;
+  flex-direction: column;
+  gap: .8vmin;
+  max-width: 38ch;
+}
+
+.cal-event {
+  display: flex;
+  gap: 1.5vmin;
+  font-size: 2.1vmin;
+  text-align: left;
+}
+
+.cal-when {
+  white-space: nowrap;
+}
+
+.cal-event-title {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Koi pond: taken out of the layout (absolute), so it never pushes other modules.
+   It fills its region, or the whole screen behind everything with fullScreen: true. */
+.module.koi {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  max-width: 100%;
+  max-height: 100%;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.module.koi.koi-full {
+  z-index: 0;
+}
+
+.koi-pond {
+  position: absolute;
+  inset: 0;
+}
+
+.koi-pond canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  -webkit-mask-image: radial-gradient(ellipse closest-side, #000 62%, transparent 100%);
+  mask-image: radial-gradient(ellipse closest-side, #000 62%, transparent 100%);
+}
+
+@media (max-width: 700px) {
+  .region.middle_center {
+    min-height: 60vmin;
+  }
+}
+
+/* Todoist */
+.todo {
+  display: flex;
+  flex-direction: column;
+  gap: 1vmin;
+  width: 36ch;
+  max-width: 100%;
+}
+
+.todo-row {
+  display: flex;
+  align-items: baseline;
+  gap: 1.4vmin;
+  font-size: 2.4vmin;
+  text-align: left;
+}
+
+.todo-dot {
+  flex: none;
+  width: 1.4vmin;
+  height: 1.4vmin;
+  border-radius: 50%;
+  border: 1px solid var(--faint);
+  align-self: center;
+}
+
+.todo-dot.p4 {
+  background: var(--fg);
+  border-color: var(--fg);
+}
+
+/* urgent */
+.todo-dot.p3 {
+  border: .35vmin solid var(--fg);
+}
+
+.todo-dot.p2 {
+  border-color: var(--dim);
+}
+
+.todo-text {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.todo-due {
+  margin-left: auto;
+  padding-left: 2vmin;
+  white-space: nowrap;
+  font-size: 1.9vmin;
+}

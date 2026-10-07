@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="fi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Peili</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<main class="mirror">
+  <section class="region top_left"></section>
+  <section class="region top_center"></section>
+  <section class="region top_right"></section>
+  <section class="region middle_center"></section>
+  <section class="region bottom_left"></section>
+  <section class="region bottom_center"></section>
+  <section class="region bottom_right"></section>
+</main>
+
+<!-- Core first, then modules, then config -->
+<script src="core.js"></script>
+<script src="modules/clock.js"></script>
+<script src="modules/greeting.js"></script>
+<script src="modules/koi.js"></script>
+<script src="modules/weather.js"></script>
+<script src="modules/calendar.js"></script>
+<script src="modules/news.js"></script>
+<script src="modules/hsl.js"></script>
+<script src="modules/todoist.js"></script>
+<script src="modules/example.js"></script>
+<script src="config.js"></script>
+<script src="burnin.js"></script>
+<script>
+if (typeof Mirror === "undefined") {
+  document.body.style.cssText = "padding:4vmin;font:3vmin sans-serif";
+  document.body.textContent = "core.js:ää ei ladattu. Pidä kaikki tiedostot annetussa kansiorakenteessa (index.html, core.js, style.css, config.js, modules/) ja lataa sivu uudelleen.";
+} else {
+  window.addEventListener("error", e => Mirror.showProblem("Skriptivirhe: " + e.message));
+  Mirror.start();
+}
+</script>
+</body>
+</html>
